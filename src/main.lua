@@ -63,7 +63,6 @@ local convert = (function()
         end
 
         table.sort(final,function(a,b)
-            print(a[1])
             return a[1] < b[1]
         end)
 
@@ -90,7 +89,6 @@ local convert = (function()
                 local code_type = guess_code_type(code)
                 assert(code_type,"'"..code.."' is an invalid command.\n\n")
                 current[code_type] = codes[code_type][code]
-                print(code_type,code,current[code_type])
             end
             
             local cmd = current["format"]..";"..current["background"]..";"..current["color"].."m"
