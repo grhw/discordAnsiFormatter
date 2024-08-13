@@ -1,7 +1,7 @@
-local convert = (function()
+local convert,codes = (function()
     local magic_symbol = "["
 
-    function split(inputstr, sep)
+    local function split(inputstr, sep)
         sep = sep or '%s'
         local t = {}
         for field, s in string.gmatch(inputstr,
@@ -101,7 +101,7 @@ local convert = (function()
         return final
     end
 
-    return convert
+    return convert,codes
 end)()
 local messages = (function()
     local messages = {}
@@ -115,6 +115,7 @@ local messages = (function()
     ds_af file &green;<file_path>&white; - &blue-clear-bold;Converts a file into .dsansi&clear-reset-white;
     ds_af preview &green;<text>&white; - &blue-clear-bold;Converts a file and prints back a preview&clear-reset-white;
     ds_af text &green;<text>&white; - &blue-clear-bold;Converts text and prints back a preview&clear-reset-white;
+    ds_af codes - &blue-clear-bold;Shows all the list of codes.&clear-reset-white;
 
     &yellow-highlight;[              Credit                ]&clear-reset;&white;
     Created by guhw with lua using luvi
@@ -146,6 +147,17 @@ if args[1] == "file" or args[1] == "preview" then
     else
         print(convert(messages.no_file))
     end
+elseif args[1] == "codes" then
+    local f = {}
+    for c_name,c_type in pairs(codes) do
+        table.insert(f,"&highlight;[    "..c_name.."    ]&white-clear;")
+        for code,_ in pairs(c_type) do
+            table.insert(f,"&".."&blue;"..code.."&white;"..";")
+        end
+    end
+    table.insert(f,"\n&green;You can combine commands by adding dashes like this:&white;")
+    table.insert(f,"&&blue;white-clear-reset&white;;")
+    print(convert(table.concat(f,"\n")))
 elseif args[1] == "text" then
     print(convert(table.concat(args, " ", 2)))
 else
