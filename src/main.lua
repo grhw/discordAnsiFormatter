@@ -114,7 +114,7 @@ local messages = (function()
     ds_af help - &blue-clear-bold;Shows this help panel&clear-reset-white;
     ds_af file &green;<file_path>&white; - &blue-clear-bold;Converts a file into .dsansi&clear-reset-white;
     ds_af preview &green;<text>&white; - &blue-clear-bold;Converts a file and prints back a preview&clear-reset-white;
-    ds_af text &green;<text>&white; - &blue-clear-bold;Converts text and prints back a preview&clear-reset-white;
+    ds_af text &green;<text>&white; - &blue-clear-bold;Converts text with quotes and back a preview&clear-reset-white;
     ds_af codes - &blue-clear-bold;Shows all the list of codes.&clear-reset-white;
 
     &yellow-highlight;[              Credit                ]&clear-reset;&white;
@@ -126,6 +126,8 @@ local messages = (function()
     return messages
 end)()
 local io = require("io")
+
+os.execute("")
 
 if args[1] == "file" or args[1] == "preview" then
     local fn = table.concat(args, " ", 2)
@@ -163,3 +165,4 @@ elseif args[1] == "text" then
 else
     print(convert(messages.help_command)) -- ds_af help doesn't actually exist
 end
+print(convert("&white;"))
