@@ -15,8 +15,8 @@ local convert = (function()
             ["white"] = "37",
         },
         ["background"] = {
-            ["clear"] = "0",
             ["dark"] = "40",
+            ["clear"] = "0",
             ["light"] = "47",
             ["highlight"] = "45",
             ["warn"] = "41",
@@ -40,16 +40,40 @@ local convert = (function()
 
     local function capture_commands(str)
         local final = {}
+        local f = 0
         for a, b, c in string.gmatch(str, "&([a-zA-Z]+)%-([a-zA-Z]+)%-([a-zA-Z]+);") do
-            table.insert(final,"&" .. a .. "-" .. b .. "-" .. c .. ";")
+            local e = "&" .. a .. "-" .. b .. "-" .. c .. ";"
+            local d = str:find(e,f+1,true)
+            f = d
+            table.insert(final,{d,e})
         end
+        f = 0
         for a, b in string.gmatch(str, "&([a-zA-Z]+)%-([a-zA-Z]+);") do
-            table.insert(final,"&" .. a .. "-" .. b .. ";")
+            local e = "&" .. a .. "-" .. b .. ";"
+            local d = str:find(e,f+1,true)
+            f = d
+            table.insert(final,{d,e})
         end
+        f = 0
         for a in string.gmatch(str, "&([a-zA-Z]+);") do
-            table.insert(final,"&" .. a .. ";")
+            local e = "&" .. a .. ";"
+            local d = str:find(e,f+1,true)
+            f = d
+            table.insert(final,{d,e})
         end
-        return final
+
+        table.sort(final,function(a,b)
+            print(a[1])
+            return a[1] < b[1]
+        end)
+
+        local matches = {}
+
+        for _, v in pairs(final) do
+            table.insert(matches, v[2])
+        end
+
+        return matches
     end
 
     local function convert(str)
@@ -66,6 +90,7 @@ local convert = (function()
                 local code_type = guess_code_type(code)
                 assert(code_type,"'"..code.."' is an invalid command.\n\n")
                 current[code_type] = codes[code_type][code]
+                print(code_type,code,current[code_type])
             end
             
             local cmd = current["format"]..";"..current["background"]..";"..current["color"].."m"
@@ -108,7 +133,7 @@ if args[1] == "file" or args[1] == "preview" then
 
         local converted = convert(content)
         if args[1] == "file" then
-            local writing = io.open(table.concat(fn),"w+")
+            local writing = io.open(fn.."_conv.dsansi","w+")
             assert(writing,"that's not supposed to happen! check if you have permissions.")
             writing:write(converted)
             writing:close()
